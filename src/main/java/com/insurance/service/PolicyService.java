@@ -1,6 +1,7 @@
 package com.insurance.service;
 
 import com.insurance.dto.*;
+import com.insurance.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
@@ -25,5 +26,7 @@ public interface PolicyService {
 
     // (/policy/delete/{policyName}
     String deletePolicy(String policyNumber,String username);
+
+    List<ProductResponseDTO> getAllProducts();
 
 }

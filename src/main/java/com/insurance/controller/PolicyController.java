@@ -13,12 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 
 @Tag(
         name = "Policy APIs",
         description = "Policy Management")
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/policy")
 public class PolicyController {
 
@@ -35,101 +37,49 @@ public class PolicyController {
     @Operation(
             summary = "Create Policy")
     @PostMapping("/create")
-    public ResponseEntity<String> createPolicy(
-            @RequestBody PolicyRequestDTO dto,
-            Principal principal) {
-
-        log.info(
-                "Create policy request received from user {}",
-                principal.getName());
-
-        String response =
-                policyService.createPolicy(
-                        dto,
-                        principal.getName());
-
-        log.info(
-                "Policy created successfully by user {}",
-                principal.getName());
-
+    public ResponseEntity<String> createPolicy(@RequestBody PolicyRequestDTO dto, Principal principal) {
+        log.info("Create policy request received from user {}", principal.getName());
+        String response = policyService.createPolicy(dto, principal.getName());
+        log.info("Policy created successfully by user {}", principal.getName());
         return ResponseEntity.ok(response);
     }
 
-    @Operation(
-            summary = "Get All Policies",description = "Only User LOB policy")
+    @Operation(summary = "Get All Policies",description = "Only User LOB policy")
     @GetMapping("/getAll")
     public ResponseEntity<Page<PolicyResponseDTO>>
-    getAllPolicies(
-            @RequestParam int page,
-            @RequestParam int size,
-            Principal principal){
-
-        log.info(
-                "Fetching policies for user {}",
-                principal.getName());
-
-        return ResponseEntity.ok(
-                policyService.getAllPolicies(
-                        page,
-                        size,
-                        principal.getName()));
+    getAllPolicies(@RequestParam int page, @RequestParam int size, Principal principal) {
+        log.info("Fetching policies for user {}", principal.getName());
+        return ResponseEntity.ok(policyService.getAllPolicies(page, size, principal.getName()));
     }
 
-
-    @Operation(
-            summary = "Get Policy By Number")
+    @Operation(summary = "Get Policy By Number")
     @GetMapping("/get/{policyNumber}")
-    public ResponseEntity<PolicyResponseDTO>
-    getPolicy(
-            @PathVariable String policyNumber){
-
-        log.info(
-                "Fetching policy {}",
-                policyNumber);
-
-        return ResponseEntity.ok(
-                policyService.getPolicy(
-                        policyNumber));
+    public ResponseEntity<PolicyResponseDTO> getPolicy(@PathVariable String policyNumber){
+        log.info("Fetching policy {}", policyNumber);
+        return ResponseEntity.ok(policyService.getPolicy(policyNumber));
     }
 
-    @Operation(
-            summary = "Delete Policy By Number")
+    @Operation(summary = "Delete Policy By Number")
     @DeleteMapping("/delete/{policyNumber}")
     public ResponseEntity<String>
-    deleteByPolicyNumber(
-            @PathVariable String policyNumber,
-            Principal principal){
-
-        log.warn(
-                "Delete request received for policy {} by user {}",
-                policyNumber,
-                principal.getName());
-
-        return ResponseEntity.ok(
-                policyService.deletePolicy(
-                        policyNumber,
-                        principal.getName()));
+    deleteByPolicyNumber(@PathVariable String policyNumber, Principal principal){
+        log.warn("Delete request received for policy {} by user {}", policyNumber, principal.getName());
+        return ResponseEntity.ok(policyService.deletePolicy(policyNumber, principal.getName()));
     }
 
-    @Operation(
-            summary = "Update Policy Details")
+    @Operation(summary = "Update Policy Details")
     @PutMapping("/update/{policyNumber}")
-    public ResponseEntity<String>
-    updatePolicy(
-            @PathVariable String policyNumber,
-            Principal principal,
-            @RequestBody PolicyRequestDTO dto){
-
-        log.info(
-                "Update request received for policy {} by user {}",
-                policyNumber,
-                principal.getName());
-
-        return ResponseEntity.ok(
-                policyService.updatePolicy(
-                        dto,
-                        principal.getName(),
-                        policyNumber));
+    public ResponseEntity<String> updatePolicy(@PathVariable String policyNumber, Principal principal, @RequestBody PolicyRequestDTO dto){
+        log.info("Update request received for policy {} by user {}", policyNumber, principal.getName());
+        return ResponseEntity.ok(policyService.updatePolicy(dto, principal.getName(), policyNumber));
     }
+
+    @Operation(summary = "Get all products")
+    @GetMapping("/products")
+    public ResponseEntity<List<ProductResponseDTO>> getAllProducts(){
+        log.info("Entering get all products call");
+        return ResponseEntity.ok(policyService.getAllProducts());
+    }
+
 }
 

@@ -2,6 +2,7 @@ package com.insurance.serviceimpl;
 
 import com.insurance.dto.PolicyRequestDTO;
 import com.insurance.dto.PolicyResponseDTO;
+import com.insurance.dto.ProductResponseDTO;
 import com.insurance.entity.Policy;
 import com.insurance.entity.Product;
 import com.insurance.entity.UsersEntity;
@@ -14,11 +15,14 @@ import com.insurance.service.PolicyService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -349,6 +353,19 @@ public class PolicyServiceImpl implements PolicyService {
                 "Unauthorized Access");
     }
 
+    @Override
+    public List<ProductResponseDTO> getAllProducts() {
+        List<Product> products = productRepository.findAll();
+        log.info(String.valueOf(products)   );
+        List<ProductResponseDTO> response = new ArrayList<>();
+
+        for(Product product :products){
+            ProductResponseDTO responseDTO1 =mapToDtoProduct(product);
+            response.add(responseDTO1);
+        }
+        return response;
+    }
+
     public PolicyResponseDTO mapToDTO(Policy policy){
         PolicyResponseDTO policyResponseDTO = new PolicyResponseDTO();
         policyResponseDTO.setPolicyName(policy.getProduct().getProductName());
@@ -359,6 +376,16 @@ public class PolicyServiceImpl implements PolicyService {
         policyResponseDTO.setPremium(policy.getProduct().getPremium());
         policyResponseDTO.setFullName(policy.getFirstName()+" "+policy.getLastName());
         return  policyResponseDTO;
+    }
+
+    public ProductResponseDTO mapToDtoProduct(Product product){
+        ProductResponseDTO productResponse = new ProductResponseDTO();
+        productResponse.setId(product.getId());
+        productResponse.setProductCode(product.getProductCode());
+        productResponse.setPremium(product.getPremium());
+        productResponse.setProductName(product.getProductName());
+        log.info(String.valueOf(productResponse));
+        return productResponse;
     }
 
 }

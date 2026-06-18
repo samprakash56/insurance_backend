@@ -2,6 +2,7 @@ package com.insurance.controller;
 
 import com.insurance.dto.LoginRequestDTO;
 import com.insurance.dto.LoginResponseDTO;
+import com.insurance.dto.MessageResponse;
 import com.insurance.dto.RegisterRequestDTO;
 import com.insurance.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
         description = "User Registration and Login"
 )
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -34,7 +36,7 @@ public class AuthController {
             description = "Creates a new user account"
     )
     @PostMapping("/register")
-    public ResponseEntity<String> register(
+    public ResponseEntity<MessageResponse> register(
             @Valid @RequestBody RegisterRequestDTO dto) {
 
         log.info(
@@ -47,7 +49,7 @@ public class AuthController {
                 "Registration completed successfully for username: {}",
                 dto.getUsername());
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new MessageResponse(response));
     }
 
     @Operation(
